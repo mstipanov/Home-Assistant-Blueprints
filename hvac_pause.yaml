@@ -72,7 +72,6 @@ trigger:
       hours: 0
       minutes: !input pause_delay_mins
       seconds: !input pause_delay_secs
-    id: group_on
   - platform: state
     entity_id: !input door_window
     from:
@@ -81,7 +80,6 @@ trigger:
       hours: 0
       minutes: !input pause_delay_mins
       seconds: !input pause_delay_secs
-    id: group_open
 condition:
   - condition: not
     conditions:
