@@ -18,6 +18,7 @@ blueprint:
       name: Door and window sensors.
       selector:
         entity:
+          multiple: true
           domain:
           - binary_sensor
           - cover
