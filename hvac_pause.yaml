@@ -13,17 +13,19 @@ blueprint:
         entity:
           domain: climate
 
-    doors_windows:
-      description: Group of entities that will activate automation. (Assumes 'on' means 'open')
+    door_window:
+      description: Entity that will activate automation. (Assumes 'on' means 'open')
       name: Door and window sensors.
       selector:
         entity:
-          domain: group
+          domain:
+          - binary_sensor
+          - cover
 
     pause_delay_mins:
       description: Time to wait before pausing HVAC in minutes.
       name: Pause Delay Minutes
-      default: 5
+      default: 0
       selector:
         number:
           min: 0
@@ -53,7 +55,7 @@ blueprint:
     resume_delay_secs:
       description: Time to wait before resuming HVAC in seconds.
       name: Resume Delay Seconds
-      default: 30
+      default: 0
       selector:
         number:
           min: 0
@@ -63,7 +65,7 @@ blueprint:
 mode: single
 trigger:
   - platform: state
-    entity_id: !input doors_windows
+    entity_id: !input door_window
     from:
     to: 'on'
     for:
@@ -72,7 +74,7 @@ trigger:
       seconds: !input pause_delay_secs
     id: group_on
   - platform: state
-    entity_id: !input doors_windows
+    entity_id: !input door_window
     from:
     to: 'open'
     for:
@@ -98,7 +100,7 @@ action:
       hvac_mode: 'off'
   - wait_for_trigger:
       - platform: state
-        entity_id: !input doors_windows
+        entity_id: !input door_window
         from:
         to: 'off'
         for:
@@ -106,7 +108,7 @@ action:
           minutes: !input resume_delay_mins
           seconds: !input resume_delay_secs
       - platform: state
-        entity_id: !input doors_windows
+        entity_id: !input door_window
         from:
         to: 'closed'
         for:
