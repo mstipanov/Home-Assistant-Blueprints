@@ -1,4 +1,4 @@
-# ver 1.1
+# ver 1.2
 ---
 # This automation configures IKEA TRADFRI On/Off switch to my default room setup
 # connected through ZHA.
@@ -32,11 +32,11 @@ blueprint:
           domain: light
     cover_entity:
       description: Cover entity to open or close.
-      name: Cover entity
+      name: (Optional) Cover entity
+      default: {}
       selector:
         entity:
           domain: cover
-      default: []
 
 mode: restart
 max_exceeded: silent
