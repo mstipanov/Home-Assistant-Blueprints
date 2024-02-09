@@ -1,4 +1,4 @@
-# ver 1.0
+# ver 1.1
 ---
 # This automation configures IKEA TRADFRI On/Off switch to my default room setup
 # connected through ZHA.
@@ -36,6 +36,7 @@ blueprint:
       selector:
         entity:
           domain: cover
+      default: []
 
 mode: restart
 max_exceeded: silent
