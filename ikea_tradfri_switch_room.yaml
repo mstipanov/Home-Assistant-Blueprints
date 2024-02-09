@@ -46,7 +46,8 @@ trigger:
   - platform: event
     event_type: zha_event
     event_data:
-      device_id: !input switch_device
+      device_id:
+        - !input switch_device
 
 action:
   - choose:
