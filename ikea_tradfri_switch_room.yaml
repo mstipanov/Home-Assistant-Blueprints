@@ -20,6 +20,7 @@ blueprint:
       description: Select the remote control you wish to use.
       selector:
         device:
+          multiple: true
           filter:
             - integration: zha
               manufacturer: IKEA of Sweden
