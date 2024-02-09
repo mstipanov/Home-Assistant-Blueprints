@@ -20,7 +20,6 @@ blueprint:
       description: Select the remote control you wish to use.
       selector:
         device:
-          multiple: true
           filter:
             - integration: zha
               manufacturer: IKEA of Sweden
@@ -46,8 +45,7 @@ trigger:
   - platform: event
     event_type: zha_event
     event_data:
-      device_id:
-        - !input switch_device
+      device_id: !input switch_device
 
 action:
   - choose:
