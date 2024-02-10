@@ -25,6 +25,9 @@ blueprint:
             - integration: zha
               manufacturer: IKEA of Sweden
               model: TRADFRI on/off switch
+            - integration: zha
+              manufacturer: unk_manufacturer
+              model: unk_model
     light_entity:
       description: Light entity to turn on or off.
       name: Light entity
