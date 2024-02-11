@@ -55,7 +55,7 @@ action:
           - condition: template
             value_template: '{{ trigger.event.data.command == "on_press" }}'
         sequence:
-          - service: light.turn_on
+          - service: light.toggle
             metadata: {}
             data: {}
             target:
@@ -76,7 +76,7 @@ action:
           - condition: template
             value_template: '{{ trigger.event.data.command == "off_press" }}'
         sequence:
-          - service: light.turn_off
+          - service: light.toggle
             metadata: {}
             data: {}
             target:
