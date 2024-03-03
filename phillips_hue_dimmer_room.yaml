@@ -54,8 +54,23 @@ action:
       - conditions:
           - condition: template
             value_template: '{{ trigger.event.data.command == "on_press" }}'
+          - condition: state
+            entity_id: !input light_entity
+            state: "off"
         sequence:
-          - service: light.toggle
+          - service: light.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id: !input light_entity
+      - conditions:
+          - condition: template
+            value_template: '{{ trigger.event.data.command == "on_press" }}'
+          - condition: state
+            entity_id: !input light_entity
+            state: "on"
+        sequence:
+          - service: light.turn_off
             metadata: {}
             data: {}
             target:
@@ -123,16 +138,9 @@ action:
         sequence:
           - service: light.turn_on
             data:
+              kelvin: 3800
+              brightness_pct: 100
               color_name: white
-              brightness_pct: 100
-            target:
-              entity_id: !input light_entity
-          - delay: 3
-          - service: light.turn_on
-            metadata: {}
-            data:
-              kelvin: 3200
-              brightness_pct: 100
             target:
               entity_id: !input light_entity
 
