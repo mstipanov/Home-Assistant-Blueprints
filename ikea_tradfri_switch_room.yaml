@@ -34,13 +34,40 @@ blueprint:
       selector:
         entity:
           domain: light
+    cover_or_automation:
+      name: Control cover or automation
+      description: Should this switch control cover or trigger an automation
+      default: cover_or_automation_disabled
+      selector:
+        select:
+          options:
+            - label: None
+              value: "none"
+            - label: Cover
+              value: "cover"
+            - label: automation
+              value: "automation"
     cover_entity:
       description: Cover entity to open or close.
       name: (Optional) Cover entity
-      default: {}
+      default: null
       selector:
         entity:
           domain: cover
+    automation_on_entity:
+      description: Automation entity to trigger with long-pressing "On" button.
+      name: (Optional) Automation On entity
+      default: null
+      selector:
+        entity:
+          domain: automation
+    automation_off_entity:
+      description: Automation entity to trigger with long-pressing "Off" button.
+      name: (Optional) Automation Off entity
+      default: null
+      selector:
+        entity:
+          domain: automation
 
 mode: restart
 max_exceeded: silent
@@ -64,16 +91,6 @@ action:
             target:
               entity_id: !input light_entity
 
-      # Long-Press the on button
-      - conditions:
-          - condition: template
-            value_template: '{{ trigger.event.data.command == "move_with_on_off" }}'
-        sequence:
-          - service: pyscript.cover_open
-            metadata: {}
-            data:
-              entity_id: !input cover_entity
-
       # Short-Press the off button
       - conditions:
           - condition: template
@@ -85,15 +102,57 @@ action:
             target:
               entity_id: !input light_entity
 
-      # Long-Press the off button
+      # Long-Press the on button moves cover
       - conditions:
-          - condition: template
-            value_template: '{{ trigger.event.data.command == "move" }}'
+          - condition: and
+            conditions:
+              - "{{ cover_or_automation == 'cover' }}"
+              - "{{ trigger.event.data.command == 'move_with_on_off' }}"
+        sequence:
+          - service: pyscript.cover_open
+            metadata: {}
+            data:
+              entity_id: !input cover_entity
+
+      # Long-Press the off button moves cover
+      - conditions:
+          - condition: and
+            conditions:
+              - "{{ cover_or_automation == 'cover' }}"
+              - "{{ trigger.event.data.command == 'move' }}"
         sequence:
           - service: pyscript.cover_close
             metadata: {}
             data:
               entity_id: !input cover_entity
 
+      # Long-Press the on button triggers automation
+      - conditions:
+          - condition: and
+            conditions:
+              - "{{ cover_or_automation == 'automation' }}"
+              - "{{ trigger.event.data.command == 'move_with_on_off' }}"
+        sequence:
+          - service: automation.trigger
+            target:
+              entity_id: !input automation_on_entity
+            data:
+              skip_condition: true
+
+      # Long-Press the off button triggers automation
+      - conditions:
+          - condition: and
+            conditions:
+              - "{{ cover_or_automation == 'automation' }}"
+              - "{{ trigger.event.data.command == 'move' }}"
+        sequence:
+          - service: automation.trigger
+            target:
+              entity_id: !input automation_off_entity
+            data:
+              skip_condition: true
+
     # Any other event will cancel the repeat loops (i.e. releasing the [on|off] button)
     default: []
+    variables:
+      cover_or_automation: !input cover_or_automation
