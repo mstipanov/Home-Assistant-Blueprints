@@ -39,7 +39,7 @@ blueprint:
         entity:
           domain: cover
 
-mode: restart
+mode: single
 max_exceeded: silent
 
 trigger:
