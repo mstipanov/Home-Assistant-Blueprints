@@ -52,29 +52,13 @@ action:
   - choose:
       # Short-Press the on button
       - conditions:
-          - condition: template
-            value_template: '{{ trigger.event.data.command == "on_press" }}'
-          - condition: state
-            entity_id: !input light_entity
-            state: "off"
+          - '{{ trigger.event.data.command == "on_press" }}'
         sequence:
-          - service: light.turn_on
-            metadata: {}
-            data: {}
+          - service: light.toggle
             target:
               entity_id: !input light_entity
-      - conditions:
-          - condition: template
-            value_template: '{{ trigger.event.data.command == "on_press" }}'
-          - condition: state
-            entity_id: !input light_entity
-            state: "on"
-        sequence:
-          - service: light.turn_off
             metadata: {}
             data: {}
-            target:
-              entity_id: !input light_entity
 
       # Long-Press the on button
       - conditions:
@@ -92,10 +76,10 @@ action:
             value_template: '{{ trigger.event.data.command == "off_press" }}'
         sequence:
           - service: light.turn_off
-            metadata: {}
-            data: {}
             target:
               entity_id: !input light_entity
+            metadata: {}
+            data: {}
 
       # Long-Press the off button
       - conditions:
