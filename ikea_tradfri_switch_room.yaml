@@ -69,7 +69,7 @@ blueprint:
         entity:
           domain: automation
 
-mode: restart
+mode: parallel
 max_exceeded: silent
 
 trigger:
