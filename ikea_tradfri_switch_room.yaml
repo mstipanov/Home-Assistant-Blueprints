@@ -45,7 +45,7 @@ blueprint:
               value: "none"
             - label: Cover
               value: "cover"
-            - label: automation
+            - label: Automation
               value: "automation"
     cover_entity:
       description: Cover entity to open or close.
@@ -154,5 +154,5 @@ action:
 
     # Any other event will cancel the repeat loops (i.e. releasing the [on|off] button)
     default: []
-    variables:
-      cover_or_automation: !input cover_or_automation
+variables:
+  cover_or_automation: !input cover_or_automation
