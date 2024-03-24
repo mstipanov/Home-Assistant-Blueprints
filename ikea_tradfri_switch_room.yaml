@@ -37,7 +37,7 @@ blueprint:
     cover_or_automation:
       name: Control cover or automation
       description: Should this switch control cover or trigger an automation
-      default: none
+      default: cover
       selector:
         select:
           options:
