@@ -54,7 +54,7 @@ action:
       # Short-Press the on button
       - conditions:
           - condition: template
-            value_template: '{{ trigger.event.data.command == "on_short_release" }}'
+            value_template: "{{ trigger.event.data.command in ('on_short_release', 'off_with_effect') }}"
         sequence:
           - service: light.toggle
             target:
