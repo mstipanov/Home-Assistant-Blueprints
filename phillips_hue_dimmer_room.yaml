@@ -48,12 +48,13 @@ trigger:
     event_data:
       device_id: !input switch_device
 
+
 action:
   - choose:
       # Short-Press the on button
       - conditions:
           - condition: template
-            value_template: '{{ trigger.event.data.command == "on" }}'
+            value_template: '{{ trigger.event.data.command == "on_short_release" }}'
         sequence:
           - service: light.toggle
             target:
