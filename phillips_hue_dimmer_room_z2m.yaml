@@ -1,0 +1,124 @@
+blueprint:
+  source_url: https://raw.githubusercontent.com/mstipanov/Home-Assistant-Blueprints/master/phillips_hue_dimmer_room_z2m.yaml
+
+  name: Zigbee2MQTT - Phillips HUE Dimmer - 4 Button Remote - Room
+
+  description: >-
+    This automation configures Phillips HUE Dimmer switch to my default room setup
+    connected through Zigbee2MQTT.
+
+  domain: automation
+
+  input:
+    switch_device:
+      name: Phillips HUE Dimmer remote control
+      description: Select the remote control you wish to use.
+      selector:
+        device:
+          multiple: false
+          filter:
+            - integration: mqtt
+              manufacturer: Signify Netherlands B.V.
+              model: RWL022
+    light_entity:
+      description: Light entity to turn on or off.
+      name: Light entity
+      selector:
+        entity:
+          domain: light
+    cover_entity:
+      description: Cover entity to open or close.
+      name: (Optional) Cover entity
+      default: {}
+      selector:
+        entity:
+          domain: cover
+
+mode: parallel
+max_exceeded: silent
+
+trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/+/action
+
+action:
+  - choose:
+      # Short-Press the on button
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'on_press' }}"
+        sequence:
+          - service: light.toggle
+            target:
+              entity_id: !input light_entity
+
+      # Long-Press the on button
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'on_hold' }}"
+        sequence:
+          - service: pyscript.cover_open
+            metadata: {}
+            data:
+              entity_id: !input cover_entity
+
+      # Short-Press the off button
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'off_press' }}"
+        sequence:
+          - service: light.turn_off
+            target:
+              entity_id: !input light_entity
+            metadata: {}
+            data: {}
+
+      # Long-Press the off button
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'off_hold' }}"
+        sequence:
+          - service: pyscript.cover_close
+            metadata: {}
+            data:
+              entity_id: !input cover_entity
+
+      # Short-Press the up button
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'up_press' }}"
+        sequence:
+          - service: light.turn_on
+            metadata: {}
+            data:
+              brightness_step: 40
+            target:
+              entity_id: !input light_entity
+
+      # Short-Press the down button
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'down_press' }}"
+        sequence:
+          - service: light.turn_on
+            metadata: {}
+            data:
+              brightness_step: -40
+            target:
+              entity_id: !input light_entity
+
+      # Long-Press the up button
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'up_hold' }}"
+        sequence:
+          - service: light.turn_on
+            data:
+              kelvin: 3800
+              brightness_pct: 100
+              color_name: white
+            target:
+              entity_id: !input light_entity
+
+    # Any other event will cancel the repeat loops (i.e. releasing the [on|off] button)
+    default: []
