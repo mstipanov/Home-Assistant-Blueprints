@@ -18,8 +18,8 @@ blueprint:
           multiple: false
           filter:
             - integration: mqtt
-              manufacturer: Signify Netherlands B.V.
-              model: RWL022
+              manufacturer: Philips
+              model: Hue dimmer switch
     light_entity:
       description: Light entity to turn on or off.
       name: Light entity
