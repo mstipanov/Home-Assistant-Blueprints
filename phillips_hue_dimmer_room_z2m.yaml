@@ -86,7 +86,7 @@ action:
       # Short-Press the up button
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'up' }}"
+            value_template: "{{ trigger.payload == 'up_press_release' }}"
         sequence:
           - service: light.turn_on
             metadata: {}
