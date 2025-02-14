@@ -46,7 +46,7 @@ action:
       # Short-Press the on button
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'on_press' }}"
+            value_template: "{{ trigger.payload == 'on_press_release' }}"
         sequence:
           - service: light.toggle
             target:
@@ -65,7 +65,7 @@ action:
       # Short-Press the off button
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'off_press' }}"
+            value_template: "{{ trigger.payload == 'off_press_release' }}"
         sequence:
           - service: light.turn_off
             target:
@@ -86,7 +86,7 @@ action:
       # Short-Press the up button
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'up_press' }}"
+            value_template: "{{ trigger.payload == 'up_press_release' }}"
         sequence:
           - service: light.turn_on
             metadata: {}
