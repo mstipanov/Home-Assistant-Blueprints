@@ -1,0 +1,159 @@
+# ver 1.2
+---
+# This automation configures IKEA TRADFRI On/Off switch to my default room setup
+# connected through Zigbee2MQTT.
+
+blueprint:
+  source_url: https://raw.githubusercontent.com/mstipanov/Home-Assistant-Blueprints/master/ikea_tradfri_switch_room.yaml
+
+  name: Zigbee2MQTT - IKEA TRADFRI - 2 Button Remote - Room
+
+  description: >-
+    This automation configures IKEA TRADFRI On/Off switch to my default room setup
+    connected through Zigbee2MQTT.
+
+  domain: automation
+
+  input:
+    switch_device:
+      name: IKEA TRADFRI remote control
+      description: Select the remote control you wish to use.
+      selector:
+        device:
+          multiple: false
+          filter:
+            - integration: mqtt
+              manufacturer: IKEA
+              model: TRADFRI on/off switch
+            - integration: mqtt
+              manufacturer: unk_manufacturer
+              model: unk_model
+    light_entity:
+      description: Light entity to turn on or off.
+      name: Light entity
+      selector:
+        entity:
+          domain: light
+    cover_or_automation:
+      name: Control cover or automation
+      description: Should this switch control cover or trigger an automation
+      default: "cover"
+      selector:
+        select:
+          options:
+            - label: None
+              value: "none"
+            - label: Cover
+              value: "cover"
+            - label: Automation
+              value: "automation"
+    cover_entity:
+      description: Cover entity to open or close.
+      name: (Optional) Cover entity
+      default: null
+      selector:
+        entity:
+          domain: cover
+    automation_on_entity:
+      description: Automation entity to trigger with long-pressing "On" button.
+      name: (Optional) Automation On entity
+      default: null
+      selector:
+        entity:
+          domain: automation
+    automation_off_entity:
+      description: Automation entity to trigger with long-pressing "Off" button.
+      name: (Optional) Automation Off entity
+      default: null
+      selector:
+        entity:
+          domain: automation
+
+mode: parallel
+max_exceeded: silent
+
+trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/+/action
+    event_data:
+      device_id: !input switch_device
+
+variables:
+  cover_or_automation: !input cover_or_automation
+
+action:
+  - choose:
+      # Short-Press the on button
+      - conditions:
+          - condition: template
+            value_template: '{{ trigger.payload == "on" }}'
+        sequence:
+          - service: light.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id: !input light_entity
+
+      # Short-Press the off button
+      - conditions:
+          - condition: template
+            value_template: '{{ trigger.payload == "off" }}'
+        sequence:
+          - service: light.turn_off
+            metadata: {}
+            data: {}
+            target:
+              entity_id: !input light_entity
+
+      # Long-Press the on button moves cover
+      - conditions:
+          - condition: and
+            conditions:
+              - "{{ cover_or_automation == 'cover' }}"
+              - "{{ trigger.payload == 'brightness_move_up' }}"
+        sequence:
+          - service: pyscript.cover_open
+            metadata: {}
+            data:
+              entity_id: !input cover_entity
+
+      # Long-Press the off button moves cover
+      - conditions:
+          - condition: and
+            conditions:
+              - "{{ cover_or_automation == 'cover' }}"
+              - "{{ trigger.payload == 'brightness_move_down' }}"
+        sequence:
+          - service: pyscript.cover_close
+            metadata: {}
+            data:
+              entity_id: !input cover_entity
+
+      # Long-Press the on button triggers automation
+      - conditions:
+          - condition: and
+            conditions:
+              - "{{ cover_or_automation == 'automation' }}"
+              - "{{ trigger.payload == 'brightness_move_up' }}"
+        sequence:
+          - service: automation.trigger
+            target:
+              entity_id: !input automation_on_entity
+            data:
+              skip_condition: true
+
+      # Long-Press the off button triggers automation
+      - conditions:
+          - condition: and
+            conditions:
+              - "{{ cover_or_automation == 'automation' }}"
+              - "{{ trigger.payload == 'brightness_move_down' }}"
+        sequence:
+          - service: automation.trigger
+            target:
+              entity_id: !input automation_off_entity
+            data:
+              skip_condition: true
+
+    # Any other event will cancel the repeat loops (i.e. releasing the [on|off] button)
+    default: []
