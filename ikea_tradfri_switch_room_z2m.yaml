@@ -75,7 +75,6 @@ max_exceeded: silent
 triggers:
   - domain: mqtt
     device_id: !input switch_device
-    type: action
     trigger: device
 
 variables:
