@@ -40,6 +40,38 @@ max_exceeded: silent
 triggers:
   - domain: mqtt
     device_id: !input switch_device
+    type: action
+    subtype: on_press_release
+    trigger: device
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: on_hold
+    trigger: device
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: off_press_release
+    trigger: device
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: off_hold
+    trigger: device
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: up_press_release
+    trigger: device
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: down
+    trigger: device
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: up_hold
     trigger: device
 
 action:
