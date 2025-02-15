@@ -41,6 +41,10 @@ trigger:
   - platform: mqtt
     topic: zigbee2mqtt/+/action
 
+condition:
+  - condition: template
+    value_template: "{{ trigger.topic.split('/')[1] == state_attr(input.switch_device, 'friendly_name') }}"
+
 action:
   - choose:
       # Short-Press the on button
