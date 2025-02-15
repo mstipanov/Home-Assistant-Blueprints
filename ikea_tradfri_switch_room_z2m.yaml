@@ -72,10 +72,11 @@ blueprint:
 mode: parallel
 max_exceeded: silent
 
-trigger:
-  - platform: device
-    domain: mqtt
+triggers:
+  - domain: mqtt
     device_id: !input switch_device
+    type: action
+    trigger: device
 
 variables:
   cover_or_automation: !input cover_or_automation
