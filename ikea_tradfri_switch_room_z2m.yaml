@@ -75,6 +75,23 @@ max_exceeded: silent
 triggers:
   - domain: mqtt
     device_id: !input switch_device
+    type: action
+    subtype: "on"
+    trigger: device
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: "off"
+    trigger: device
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: brightness_move_up
+    trigger: device
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: brightness_move_down
     trigger: device
 
 variables:
