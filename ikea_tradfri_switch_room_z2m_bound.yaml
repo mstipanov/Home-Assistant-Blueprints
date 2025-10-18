@@ -1,14 +1,14 @@
-# ver 1.2
+# ver 1.0
 ---
 
 blueprint:
-  source_url: https://raw.githubusercontent.com/mstipanov/Home-Assistant-Blueprints/master/ikea_tradfri_switch_room.yaml
+  source_url: https://raw.githubusercontent.com/mstipanov/Home-Assistant-Blueprints/master/ikea_tradfri_switch_room_z2m_bound.yaml
 
-  name: ZHA - IKEA TRADFRI - 2 Button Remote - Room
+  name: Zigbee2MQTT - IKEA TRADFRI/RODRET - 2 Button Remote - Room - Bound
 
   description: >-
-    This automation configures IKEA TRADFRI On/Off switch to my default room setup
-    connected through ZHA.
+    This automation configures IKEA TRADFRI On/Off switch or RODRET wireless dimmer/power switch to my default room
+    setup connected through Zigbee2MQTT when the light is bound to the switch using Zigbee2MQTT bind facility.
 
   domain: automation
 
@@ -20,18 +20,15 @@ blueprint:
         device:
           multiple: false
           filter:
-            - integration: zha
-              manufacturer: IKEA of Sweden
+            - integration: mqtt
+              manufacturer: IKEA
               model: TRADFRI on/off switch
-            - integration: zha
+            - integration: mqtt
+              manufacturer: IKEA
+              model: RODRET wireless dimmer/power switch
+            - integration: mqtt
               manufacturer: unk_manufacturer
               model: unk_model
-    light_entity:
-      description: Light entity to turn on or off.
-      name: Light entity
-      selector:
-        entity:
-          domain: light
     cover_or_automation:
       name: Control cover or automation
       description: Should this switch control cover or trigger an automation
@@ -70,45 +67,39 @@ blueprint:
 mode: parallel
 max_exceeded: silent
 
-trigger:
-  - platform: event
-    event_type: zha_event
-    event_data:
-      device_id: !input switch_device
+triggers:
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: "on"
+    trigger: device
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: "off"
+    trigger: device
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: brightness_move_up
+    trigger: device
+  - domain: mqtt
+    device_id: !input switch_device
+    type: action
+    subtype: brightness_move_down
+    trigger: device
 
 variables:
   cover_or_automation: !input cover_or_automation
 
 action:
   - choose:
-      # Short-Press the on button
-      - conditions:
-          - condition: template
-            value_template: '{{ trigger.event.data.command == "on" }}'
-        sequence:
-          - service: light.turn_on
-            metadata: {}
-            data: {}
-            target:
-              entity_id: !input light_entity
-
-      # Short-Press the off button
-      - conditions:
-          - condition: template
-            value_template: '{{ trigger.event.data.command == "off" }}'
-        sequence:
-          - service: light.turn_off
-            metadata: {}
-            data: {}
-            target:
-              entity_id: !input light_entity
-
       # Long-Press the on button moves cover
       - conditions:
           - condition: and
             conditions:
               - "{{ cover_or_automation == 'cover' }}"
-              - "{{ trigger.event.data.command == 'move_with_on_off' }}"
+              - "{{ trigger.payload == 'brightness_move_up' }}"
         sequence:
           - service: pyscript.cover_open
             metadata: {}
@@ -120,7 +111,7 @@ action:
           - condition: and
             conditions:
               - "{{ cover_or_automation == 'cover' }}"
-              - "{{ trigger.event.data.command == 'move' }}"
+              - "{{ trigger.payload == 'brightness_move_down' }}"
         sequence:
           - service: pyscript.cover_close
             metadata: {}
@@ -132,7 +123,7 @@ action:
           - condition: and
             conditions:
               - "{{ cover_or_automation == 'automation' }}"
-              - "{{ trigger.event.data.command == 'move_with_on_off' }}"
+              - "{{ trigger.payload == 'brightness_move_up' }}"
         sequence:
           - service: automation.trigger
             target:
@@ -145,7 +136,7 @@ action:
           - condition: and
             conditions:
               - "{{ cover_or_automation == 'automation' }}"
-              - "{{ trigger.event.data.command == 'move' }}"
+              - "{{ trigger.payload == 'brightness_move_down' }}"
         sequence:
           - service: automation.trigger
             target:

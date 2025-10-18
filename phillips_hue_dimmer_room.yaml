@@ -1,7 +1,5 @@
 # ver 1.2
 ---
-# This automation configures Phillips HUE Dimmer switch to my default room setup
-# connected through ZHA.
 
 blueprint:
   source_url: https://raw.githubusercontent.com/mstipanov/Home-Assistant-Blueprints/master/phillips_hue_dimmer_room.yaml
@@ -9,8 +7,7 @@ blueprint:
   name: ZHA - Phillips HUE Dimmer - 4 Button Remote - Room
 
   description: >-
-    This automation configures Phillips HUE Dimmer switch to my default room setup
-    connected through ZHA.
+    This automation configures Phillips HUE Dimmer switch to my default room setup connected through ZHA.
 
   domain: automation
 

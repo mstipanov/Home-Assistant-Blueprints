@@ -2,12 +2,13 @@
 ---
 
 blueprint:
-  source_url: https://raw.githubusercontent.com/mstipanov/Home-Assistant-Blueprints/master/phillips_hue_dimmer_room_z2m.yaml
+  source_url: https://raw.githubusercontent.com/mstipanov/Home-Assistant-Blueprints/master/phillips_hue_dimmer_room_z2m_bound.yaml
 
-  name: Zigbee2MQTT - Phillips HUE Dimmer - 4 Button Remote - Room
+  name: Zigbee2MQTT - Phillips HUE Dimmer - 4 Button Remote - Room - Bound
 
   description: >-
-    This automation configures Phillips HUE Dimmer switch to my default room setup connected through Zigbee2MQTT.
+    This automation configures Phillips HUE Dimmer switch to my default room setup connected through Zigbee2MQTT when
+    the light is bound to the switch using Zigbee2MQTT bind facility.
 
   domain: automation
 
@@ -78,15 +79,6 @@ triggers:
 
 action:
   - choose:
-      # Short-Press the on button
-      - conditions:
-          - condition: template
-            value_template: "{{ trigger.payload == 'on_press_release' }}"
-        sequence:
-          - service: light.toggle
-            target:
-              entity_id: !input light_entity
-
       # Long-Press the on button
       - conditions:
           - condition: template
@@ -117,30 +109,6 @@ action:
             metadata: {}
             data:
               entity_id: !input cover_entity
-
-      # Short-Press the up button
-      - conditions:
-          - condition: template
-            value_template: "{{ trigger.payload == 'up_press_release' }}"
-        sequence:
-          - service: light.turn_on
-            metadata: {}
-            data:
-              brightness_step: 40
-            target:
-              entity_id: !input light_entity
-
-      # Short-Press the down button
-      - conditions:
-          - condition: template
-            value_template: "{{ trigger.payload == 'down' }}"
-        sequence:
-          - service: light.turn_on
-            metadata: {}
-            data:
-              brightness_step: -40
-            target:
-              entity_id: !input light_entity
 
       # Long-Press the up button
       - conditions:

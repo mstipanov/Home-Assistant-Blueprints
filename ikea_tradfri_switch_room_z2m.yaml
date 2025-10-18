@@ -1,16 +1,14 @@
 # ver 1.2
 ---
-# This automation configures IKEA TRADFRI On/Off switch or RODRET wireless dimmer/power switch to my default room setup
-# connected through Zigbee2MQTT.
 
 blueprint:
-  source_url: https://raw.githubusercontent.com/mstipanov/Home-Assistant-Blueprints/master/ikea_tradfri_switch_room.yaml
+  source_url: https://raw.githubusercontent.com/mstipanov/Home-Assistant-Blueprints/master/ikea_tradfri_switch_room_z2m.yaml
 
   name: Zigbee2MQTT - IKEA TRADFRI/RODRET - 2 Button Remote - Room
 
   description: >-
-    This automation configures IKEA TRADFRI On/Off switch to my default room setup
-    connected through Zigbee2MQTT.
+    This automation configures IKEA TRADFRI On/Off switch or RODRET wireless dimmer/power switch to my default room
+    setup connected through Zigbee2MQTT.
 
   domain: automation
 
