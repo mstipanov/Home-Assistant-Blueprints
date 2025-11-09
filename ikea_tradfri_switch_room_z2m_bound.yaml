@@ -7,7 +7,7 @@ blueprint:
   name: Zigbee2MQTT - IKEA TRADFRI/RODRET - 2 Button Remote - Room - Bound
 
   description: >-
-    This automation configures IKEA TRADFRI On/Off switch or RODRET wireless dimmer/power switch to my default room
+    This automation configures IKEA TRADFRI On/Off switch or RODRET wireless dimmer/power switch or STYRBAR remote control to my default room
     setup connected through Zigbee2MQTT when the light is bound to the switch using Zigbee2MQTT bind facility.
 
   domain: automation
@@ -26,6 +26,9 @@ blueprint:
             - integration: mqtt
               manufacturer: IKEA
               model: RODRET wireless dimmer/power switch
+            - integration: mqtt
+              manufacturer: IKEA
+              model: STYRBAR remote control
             - integration: mqtt
               manufacturer: unk_manufacturer
               model: unk_model

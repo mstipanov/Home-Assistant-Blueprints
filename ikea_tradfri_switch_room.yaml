@@ -7,7 +7,7 @@ blueprint:
   name: ZHA - IKEA TRADFRI - 2 Button Remote - Room
 
   description: >-
-    This automation configures IKEA TRADFRI On/Off switch to my default room setup
+    This automation configures IKEA TRADFRI On/Off switch or RODRET wireless dimmer/power switch or STYRBAR remote control to my default room setup
     connected through ZHA.
 
   domain: automation
@@ -23,6 +23,12 @@ blueprint:
             - integration: zha
               manufacturer: IKEA of Sweden
               model: TRADFRI on/off switch
+            - integration: zha
+              manufacturer: IKEA of Sweden
+              model: RODRET wireless dimmer/power switch
+            - integration: zha
+              manufacturer: IKEA of Sweden
+              model: STYRBAR remote control
             - integration: zha
               manufacturer: unk_manufacturer
               model: unk_model
