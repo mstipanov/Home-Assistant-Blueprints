@@ -79,6 +79,24 @@ triggers:
 
 action:
   - choose:
+      # Short-Press the on button
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: template
+                value_template: "{{ trigger.payload == 'on_press_release' }}"
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: !input light_entity
+                    state:
+                      - "on"
+
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: !input light_entity
+
       # Long-Press the on button
       - conditions:
           - condition: template
