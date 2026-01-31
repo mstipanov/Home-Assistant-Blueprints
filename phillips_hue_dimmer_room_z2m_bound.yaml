@@ -36,6 +36,17 @@ blueprint:
       selector:
         entity:
           domain: cover
+    on_press_delay_ms:
+      description: Delay before turning on the light after on_press_release (milliseconds).
+      name: On press delay (ms)
+      default: 200
+      selector:
+        number:
+          min: 0
+          max: 2000
+          step: 50
+          unit_of_measurement: "Milliseconds"
+          mode: slider
 
 mode: parallel
 max_exceeded: silent
@@ -96,7 +107,7 @@ action:
               hours: 0
               minutes: 0
               seconds: 0
-              milliseconds: 200
+              milliseconds: !input on_press_delay_ms
           - if:
               - condition: not
                 conditions:
