@@ -96,7 +96,7 @@ action:
               hours: 0
               minutes: 0
               seconds: 0
-              milliseconds: 100
+              milliseconds: 20
           - if:
               - condition: not
                 conditions:
